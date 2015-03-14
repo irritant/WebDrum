@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>WebDrum Demo</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<!-- WebNoise, WebAHDSR & WebDrum -->
+		<script type="text/javascript" src="../src/web-noise.js"></script>
+		<script type="text/javascript" src="../src/web-ahdsr.js"></script>
+		<script type="text/javascript" src="../src/web-drum.js"></script>
+
+		<!-- Page Script -->
+		<script type="text/javascript">
+			window.addEventListener('load', function(e) {
+
+				// Obtain a new audio context:
+				var context = null;
+				if (typeof window.AudioContext != 'undefined') {
+					context = new AudioContext();
+				} else if (typeof window.webkitAudioContext != 'undefined') {
+					context = new webkitAudioContext();
+				}
+
+				if (!context) {
+					console.log('Web Audio API is not supported.');
+					return;
+				}
+
+				window.kick = new WebDrum(context);
+				window.kick.tone.type = 'triangle';
+				window.kick.tonePitchEnv.decayTime = 0.1;
+				window.kick.tonePitchEnv.releaseTime = 0.1;
+				window.kick.tonePitchEnv.holdValue = 110.0;
+				window.kick.tonePitchEnv.sustainValue = 55.0;
+				window.kick.toneFilterEnv.holdValue = 880.0;
+				window.kick.toneFilterEnv.sustainValue = 110.0;
+				window.kick.toneAmpEnv.decayTime = 0.25;
+				window.kick.toneAmpEnv.releaseTime = 0.25;
+				window.kick.toneAmpEnv.holdValue = 0.75;
+				window.kick.toneAmpEnv.sustainValue = 0.0;
+				window.kick.noise.blockSize(8);
+				window.kick.noiseAmpEnv.decayTime = 0.05;
+				window.kick.noiseAmpEnv.releaseTime = 0.05;
+				window.kick.noiseAmpEnv.holdValue = 0.1;
+				window.kick.noiseAmpEnv.sustainValue = 0.0;
+				window.kick.connect();
+
+				window.snare = new WebDrum(context);
+				window.snare.connect();
+
+				window.tom = new WebDrum(context);
+				window.tom.tonePitchEnv.decayTime = 0.25;
+				window.tom.tonePitchEnv.releaseTime = 0.25;
+				window.tom.tonePitchEnv.holdValue = 440.0;
+				window.tom.tonePitchEnv.sustainValue = 110.0;
+				window.tom.toneAmpEnv.decayTime = 0.5;
+				window.tom.toneAmpEnv.releaseTime = 0.5;
+				window.tom.toneAmpEnv.holdValue = 0.75;
+				window.tom.toneAmpEnv.sustainValue = 0.0;
+				window.tom.noise.blockSize(8);
+				window.tom.noiseAmpEnv.decayTime = 0.05;
+				window.tom.noiseAmpEnv.releaseTime = 0.05;
+				window.tom.noiseAmpEnv.holdValue = 0.1;
+				window.tom.noiseAmpEnv.sustainValue = 0.0;
+				window.tom.connect();
+
+				window.bell = new WebDrum(context);
+				window.bell.tone.type = 'sawtooth';
+				window.bell.tonePitchEnv.holdValue = 880.0;
+				window.bell.tonePitchEnv.sustainValue = 880.0;
+				window.bell.toneAmpEnv.decayTime = 0.15;
+				window.bell.toneAmpEnv.releaseTime = 0.15;
+				window.bell.toneAmpEnv.holdValue = 0.5;
+				window.bell.toneAmpEnv.sustainValue = 0.0;
+				window.bell.toneFilter.Q.value = 10.0;
+				window.bell.toneFilterEnv.decayTime = 0.05;
+				window.bell.toneFilterEnv.releaseTime = 0.05;
+				window.bell.toneFilterEnv.holdValue = 3520.0;
+				window.bell.toneFilterEnv.sustainValue = 1760.0;
+				window.bell.noiseAmpEnv.holdValue = 0.0;
+				window.bell.noiseAmpEnv.sustainValue = 0.0;
+				window.bell.connect();
+
+				window.hat = new WebDrum(context);
+				window.hat.tone.type = 'sawtooth';
+				window.hat.toneAmpEnv.holdValue = 0.0;
+				window.hat.toneAmpEnv.sustainValue = 0.0;
+				window.hat.noise.blockSize(2);
+				window.hat.noiseFilter.Q.value = 5.0;
+				window.hat.noiseAmpEnv.decayTime = 0.1;
+				window.hat.noiseAmpEnv.releaseTime = 0.1;
+				window.hat.noiseAmpEnv.decayCurve = 'exponential';
+				window.hat.noiseAmpEnv.releaseCurve = 'exponential';
+				window.hat.noiseAmpEnv.holdValue = 0.5;
+				window.hat.noiseFilterEnv.decayTime = 0.1;
+				window.hat.noiseFilterEnv.releaseTime = 0.1;
+				window.hat.noiseFilterEnv.decayCurve = 'exponential';
+				window.hat.noiseFilterEnv.releaseCurve = 'exponential';
+				window.hat.noiseFilterEnv.holdValue = 500.0;
+				window.hat.noiseFilterEnv.sustainValue = 1000.0;
+				window.hat.connect();
+
+				window.cymbal = new WebDrum(context);
+				window.cymbal.tone.type = 'sawtooth';
+				window.cymbal.toneAmpEnv.holdValue = 0.0;
+				window.cymbal.toneAmpEnv.sustainValue = 0.0;
+				window.cymbal.noise.blockSize(1);
+				window.cymbal.noiseFilter.Q.value = 5.0;
+				window.cymbal.noiseAmpEnv.decayTime = 2.0;
+				window.cymbal.noiseAmpEnv.releaseTime = 2.0;
+				window.cymbal.noiseAmpEnv.decayCurve = 'exponential';
+				window.cymbal.noiseAmpEnv.releaseCurve = 'exponential';
+				window.cymbal.noiseAmpEnv.holdValue = 0.75;
+				window.cymbal.noiseFilterEnv.decayTime = 0.5;
+				window.cymbal.noiseFilterEnv.releaseTime = 0.5;
+				window.cymbal.noiseFilterEnv.decayCurve = 'exponential';
+				window.cymbal.noiseFilterEnv.releaseCurve = 'exponential';
+				window.cymbal.noiseFilterEnv.holdValue = 1000.0;
+				window.cymbal.noiseFilterEnv.sustainValue = 2000.0;
+				window.cymbal.connect();
+
+				// Configure mouse event listeners:
+				document.getElementById('kick-trigger').addEventListener('mousedown', function(e) {
+					e.preventDefault();
+					window.kick.trigger();
+				});
+
+				document.getElementById('snare-trigger').addEventListener('mousedown', function(e) {
+					e.preventDefault();
+					window.snare.trigger();
+				});
+
+				document.getElementById('tom-trigger').addEventListener('mousedown', function(e) {
+					e.preventDefault();
+					window.tom.trigger();
+				});
+
+				document.getElementById('bell-trigger').addEventListener('mousedown', function(e) {
+					e.preventDefault();
+					window.bell.trigger();
+				});
+
+				document.getElementById('hat-trigger').addEventListener('mousedown', function(e) {
+					e.preventDefault();
+					window.hat.trigger();
+				});
+
+				document.getElementById('cymbal-trigger').addEventListener('mousedown', function(e) {
+					e.preventDefault();
+					window.cymbal.trigger();
+				});
+
+				// Configure key event listener:
+				document.addEventListener('keydown', function(e) {
+					switch (e.which) {
+						case 75: // Kick
+							e.preventDefault();
+							window.kick.trigger();
+							break;
+						case 83: // Snare
+							e.preventDefault();
+							window.snare.trigger();
+							break;
+						case 84: // Tom
+							e.preventDefault();
+							window.tom.trigger();
+							break;
+						case 66: // Bell
+							e.preventDefault();
+							window.bell.trigger();
+							break;
+						case 72: // Hat
+							e.preventDefault();
+							window.hat.trigger();
+							break;
+						case 67: // Cymbal
+							e.preventDefault();
+							window.cymbal.trigger();
+							break;
+						default:
+							break;
+					}
+				});
+
+			});
+		</script>
+
+		<!-- Styles -->
+		<style>
+			body {
+				font-family: Helvetica, Arial, sans-serif;
+			}
+
+			a {
+				text-decoration: none;
+				color: #0000FF;
+			}
+
+			a:hover {
+				text-decoration: underline;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>WebDrum</h1>
+		<p>A WebAudio drum synthesizer.</p>
+		<p><a href="https://github.com/irritant/WebDrum">https://github.com/irritant/WebDrum</a></p>
+		<p>Each of the following drum sounds was created by modifying parameters on an instance of WebDrum. A WebDrum instance consists of two signal chains:</p>
+		<ul>
+			<li>A tone oscillator with pitch, filter frequency and amplitude modulation via AHDSR envelopes.</li>
+			<li>A noise generator with filter frequency and amplitude modulation via AHDSR envelopes.</li>
+		</ul>
+		<p>WebDrum requires <a href="https://github.com/irritant/WebNoise">WebNoise</a> and <a href="https://github.com/irritant/WebAHDSR">WebAHDSR</a>.</p>
+		<p>
+			<button id="kick-trigger">Kick (k)</button>&nbsp;
+			<button id="snare-trigger">Snare (s)</button>&nbsp;
+			<button id="tom-trigger">Tom (t)</button>&nbsp;
+			<button id="bell-trigger">Bell (b)</button>&nbsp;
+			<button id="hat-trigger">Hat (h)</button>&nbsp;
+			<button id="cymbal-trigger">Cymbal (c)</button>
+		</p>
+	</body>
+</html>
